@@ -96,6 +96,11 @@ class ExyliaThemePlugin implements HasPluginSettings, Plugin
         // navigation tree itself is still owned by each PanelProvider.
         $this->registerSidebarHooks();
 
+        // Prepend our override view location once — resolves same-relative-path
+        // blade files (console shell, server list cards) before the panel's own,
+        // leaving every upstream view untouched on disk.
+        View::prependLocation(dirname(__DIR__) . '/resources/views/overrides');
+
         if ($panel->getId() === 'server') {
             $this->registerServerConsoleOverrides();
         }
@@ -128,9 +133,8 @@ class ExyliaThemePlugin implements HasPluginSettings, Plugin
 
     /**
      * Registers Exylia's console widgets via the panel's own public extension
-     * point, and prepends a view location so our own blade files take
-     * priority over the panel's core console views (same relative path,
-     * resolved first — the base views remain untouched on disk).
+     * point. The matching view overrides are resolved via the prepended
+     * location registered in boot().
      */
     protected function registerServerConsoleOverrides(): void
     {
@@ -141,8 +145,6 @@ class ExyliaThemePlugin implements HasPluginSettings, Plugin
         Console::registerCustomWidgets(ConsoleWidgetPosition::BelowConsole, [
             SystemPulseWidget::class,
         ]);
-
-        View::prependLocation(dirname(__DIR__) . '/resources/views/overrides');
     }
 
     protected function renderHead(): string

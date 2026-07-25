@@ -828,3 +828,258 @@
 .exylia-terminal-input__field::placeholder {
     color: var(--exylia-text-dim);
 }
+
+/* ==========================================================================
+   11. Server list — grid-mode dashboard cards
+   (Exylia\ExyliaTheme overrides of livewire.server-entry[-placeholder] and
+   livewire.columns.progress-bar-column)
+   ========================================================================== */
+
+/* The grid's own fi-ta-record wrapper (bg/ring/shadow) would double up on
+   top of the card's own chrome below — strip it so our card is the only
+   visible surface. */
+.fi-ta-record:has(.exylia-server-card) {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Tone resolution: Filament color names -> Exylia tokens. `data-tone`
+   mirrors ServerCondition/ContainerStatus::getColor() ('success', 'warning',
+   'danger', 'info', 'primary'). Anything unmapped falls back to primary. */
+.exylia-server-card {
+    --exylia-tone: var(--exylia-primary);
+}
+.exylia-server-card[data-tone='success'] { --exylia-tone: var(--exylia-success); }
+.exylia-server-card[data-tone='warning'] { --exylia-tone: var(--exylia-warning); }
+.exylia-server-card[data-tone='danger'] { --exylia-tone: var(--exylia-danger); }
+.exylia-server-card[data-tone='info'] { --exylia-tone: var(--exylia-info); }
+.exylia-server-card[data-tone='primary'] { --exylia-tone: var(--exylia-primary); }
+
+.exylia-server-card {
+    position: relative;
+    display: block;
+    isolation: isolate;
+    overflow: hidden;
+    cursor: pointer;
+    border-radius: var(--exylia-radius);
+    border: 1px solid var(--exylia-border);
+    background: color-mix(in oklab, var(--exylia-surface) 90%, transparent);
+    backdrop-filter: blur(8px);
+    padding: 1rem 1.1rem;
+    transition: border-color var(--exylia-base) var(--exylia-ease),
+        box-shadow var(--exylia-base) var(--exylia-ease),
+        transform var(--exylia-base) var(--exylia-ease);
+}
+.exylia-server-card:hover {
+    border-color: color-mix(in oklab, var(--exylia-tone) 45%, transparent);
+    box-shadow: 0 0 32px -10px color-mix(in oklab, var(--exylia-tone) calc(var(--exylia-glow, 0.55) * 70%), transparent);
+    transform: translateY(-2px);
+}
+.exylia-server-card:active {
+    transform: translateY(0) scale(0.994);
+}
+
+.exylia-server-card__rail {
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block: 0.5rem;
+    width: 3px;
+    border-radius: 9999px;
+    background: var(--exylia-tone);
+    box-shadow: 0 0 12px color-mix(in oklab, var(--exylia-tone) 70%, transparent);
+}
+
+.exylia-server-card__art {
+    position: absolute;
+    inset: 0;
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    opacity: 0.14;
+    mask-image: linear-gradient(to left, black, transparent 85%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.exylia-server-card__body {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+    margin-inline-start: 0.5rem;
+}
+
+.exylia-server-card__head {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.65rem;
+}
+
+.exylia-server-card__status {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    background: color-mix(in oklab, var(--exylia-tone) 16%, transparent);
+    border: 1px solid color-mix(in oklab, var(--exylia-tone) 40%, transparent);
+    color: var(--exylia-tone);
+}
+.exylia-server-card__status-icon {
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.exylia-server-card__title-wrap {
+    flex: 1;
+    min-width: 0;
+}
+.exylia-server-card__title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--exylia-text);
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+.exylia-server-card__uptime {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--exylia-text-dim);
+}
+.exylia-server-card__description {
+    margin-top: 0.15rem;
+    font-size: 0.825rem;
+    color: var(--exylia-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.exylia-server-card__actions {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    border-radius: calc(var(--exylia-radius) - 0.3rem);
+    background: color-mix(in oklab, var(--exylia-bg-elevated) 70%, transparent);
+    border: 1px solid var(--exylia-border);
+    padding: 0.15rem;
+}
+
+.exylia-server-card__stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.85rem 1rem;
+}
+@container (max-width: 26rem) {
+    .exylia-server-card__stats {
+        grid-template-columns: 1fr;
+    }
+}
+.exylia-server-card__stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+}
+.exylia-server-card__stat-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--exylia-text-dim);
+}
+.exylia-server-card__stat-icon {
+    width: 0.9rem;
+    height: 0.9rem;
+    flex-shrink: 0;
+}
+
+.exylia-server-card__network {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    justify-content: center;
+}
+.exylia-server-card__network-address {
+    font-size: 0.825rem;
+    font-weight: 600;
+    font-family: var(--mono-font-family, monospace);
+    color: var(--exylia-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Progress bars — shared by the server card grid include and the classic
+   table's ProgressBarColumn. */
+.exylia-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    width: 100%;
+}
+.exylia-progress__track {
+    position: relative;
+    width: 100%;
+    height: 0.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+}
+.exylia-progress__fill {
+    height: 100%;
+    border-radius: 9999px;
+    transition: width var(--exylia-base) var(--exylia-ease);
+    box-shadow: 0 0 8px color-mix(in oklab, currentColor 60%, transparent);
+}
+.exylia-progress__fill[data-status='danger'] {
+    box-shadow: 0 0 10px color-mix(in oklab, var(--exylia-danger) 70%, transparent);
+}
+.exylia-progress__label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--exylia-text-muted);
+    text-align: start;
+}
+
+/* Loading skeleton — mirrors card layout with shimmer bars instead of data. */
+.exylia-server-card--loading {
+    cursor: progress;
+}
+.exylia-server-card--loading .exylia-server-card__status {
+    animation: exylia-pulse-soft 1.6s var(--exylia-ease) infinite;
+}
+.exylia-server-card__skeleton-bar {
+    display: block;
+    width: 100%;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: linear-gradient(
+        90deg,
+        color-mix(in oklab, var(--exylia-border) 100%, transparent) 25%,
+        color-mix(in oklab, var(--exylia-secondary) 30%, transparent) 50%,
+        color-mix(in oklab, var(--exylia-border) 100%, transparent) 75%
+    );
+    background-size: 200% 100%;
+    animation: exylia-shimmer 1.6s ease-in-out infinite;
+}
+.exylia-server-card__skeleton-bar--short {
+    width: 60%;
+}
+
+@keyframes exylia-shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+@keyframes exylia-pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
+}
