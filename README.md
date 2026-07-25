@@ -27,7 +27,7 @@ Success `#8fffc1` · Warning `#ffc58f` · Danger `#a33b53` · Info `#59a4ff`.
 
 **1. Import** (any of these):
 - Admin UI: **Plugins > Import > URL**, paste the release asset link:
-  `https://github.com/DiGround-s/ExyliaPelicanTheme/releases/download/v2.1.0/exylia-theme.zip`
+  `https://github.com/DiGround-s/ExyliaPelicanTheme/releases/download/v2.1.1/exylia-theme.zip`
 - Or copy this folder into the panel's persistent `plugins/` volume as
   `plugins/exylia-theme/`.
 

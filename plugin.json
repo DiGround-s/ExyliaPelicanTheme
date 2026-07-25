@@ -2,7 +2,7 @@
     "id": "exylia-theme",
     "name": "Exylia Theme",
     "author": "Exylia",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "description": "A premium, minimalist galactic theme for Pelican Panel with a structural redesign: restructured sidebar/topbar, a rebuilt server console with quick-access and system-pulse widgets, a re-skinned terminal, redesigned server list grid cards, and Tabler icon replacements throughout. Full dark & light modes, admin-configurable.",
     "category": "theme",
     "url": "",

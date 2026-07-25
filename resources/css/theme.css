@@ -316,8 +316,7 @@
 .exylia-theme .fi-section,
 .exylia-theme .fi-wi,
 .exylia-theme .fi-ta-ctn,
-.exylia-theme .fi-modal-window,
-.exylia-theme .fi-dropdown-panel {
+.exylia-theme .fi-modal-window {
     background: color-mix(in oklab, var(--exylia-surface) 90%, transparent);
     border: 1px solid var(--exylia-border);
     border-radius: var(--exylia-radius);
@@ -327,6 +326,19 @@
     transition: border-color var(--exylia-base) var(--exylia-ease),
         box-shadow var(--exylia-base) var(--exylia-ease),
         transform var(--exylia-base) var(--exylia-ease);
+}
+
+/* Dropdown panels are absolutely positioned by Filament relative to their
+   trigger — forcing position:relative here (like the cards above) breaks
+   that anchoring and the panel collapses to the bottom of the layout at
+   full width. Keep positioning untouched, only recolor. */
+.exylia-theme .fi-dropdown-panel {
+    background: color-mix(in oklab, var(--exylia-surface) 96%, transparent);
+    border: 1px solid var(--exylia-border);
+    border-radius: var(--exylia-radius);
+    backdrop-filter: blur(8px);
+    transition: border-color var(--exylia-base) var(--exylia-ease),
+        box-shadow var(--exylia-base) var(--exylia-ease);
 }
 .exylia-theme .fi-section::before,
 .exylia-theme .fi-wi::before {
