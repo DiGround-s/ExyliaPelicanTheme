@@ -4,20 +4,10 @@
 /* Filament CSS layers resolve. Runtime --exylia-* tokens are injected by the */
 /* plugin head render hook, so admin settings change the look with no rebuild. */
 
-@import 'tailwindcss';
-
-/* The filament/filament package CSS already imports support, actions, forms,
-   infolists, notifications, schemas, tables and widgets, plus the panel
-   layout/sidebar/topbar/header/page components that this theme replaces the
-   default Filament theme with. Importing only the sub-packages (without this
-   one) breaks the panel layout because layout.css, sidebar.css, topbar.css
-   etc. never load. */
-@import '../../../../vendor/filament/filament/resources/css/index.css';
-
-@variant dark (&:where(.dark, .dark *));
-
-@source '../../src';
-@source '../views';
+/* Use the official Filament v5 theme entrypoint. It imports the complete
+   panel CSS (layout, sidebar, topbar, pages and all Filament packages) and
+   disables a second Tailwind source scan for this separate theme entrypoint. */
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 /* ==========================================================================
    1. Semantic tokens — derived from the injected Exylia palette
