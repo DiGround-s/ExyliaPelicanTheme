@@ -171,10 +171,22 @@
    ========================================================================== */
 .exylia-theme .fi-sidebar {
     --sidebar-width: 18rem;
-    background: color-mix(in oklab, var(--exylia-bg-elevated) 86%, transparent);
-    backdrop-filter: blur(18px) saturate(1.15);
+    isolation: isolate;
+    background: transparent;
     border-inline-end: 1px solid var(--exylia-border);
     box-shadow: 1px 0 0 0 color-mix(in oklab, var(--exylia-primary) 8%, transparent);
+}
+
+/* Keep the blur off the sidebar itself: backdrop-filter creates a containing
+   block for fixed dropdown panels and breaks Filament's viewport positioning. */
+.exylia-theme .fi-sidebar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: color-mix(in oklab, var(--exylia-bg-elevated) 86%, transparent);
+    backdrop-filter: blur(18px) saturate(1.15);
+    pointer-events: none;
 }
 
 .exylia-theme .fi-sidebar-header {
