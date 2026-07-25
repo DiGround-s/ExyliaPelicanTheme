@@ -3,13 +3,20 @@
 namespace Exylia\ExyliaTheme;
 
 use App\Contracts\Plugins\HasPluginSettings;
+use App\Enums\ConsoleWidgetPosition;
+use App\Filament\Server\Pages\Console;
 use Exylia\ExyliaTheme\Concerns\BuildsExyliaPalette;
 use Exylia\ExyliaTheme\Concerns\InteractsWithExyliaSettings;
+use Exylia\ExyliaTheme\Widgets\QuickAccessWidget;
+use Exylia\ExyliaTheme\Widgets\SystemPulseWidget;
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsIconAlias;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\HtmlString;
 
 class ExyliaThemePlugin implements HasPluginSettings, Plugin
@@ -79,6 +86,63 @@ class ExyliaThemePlugin implements HasPluginSettings, Plugin
             PanelsRenderHook::BODY_START,
             fn (): string => Blade::render('<x-exylia-theme::atmosphere />'),
         );
+
+        // Structural sidebar/topbar/user-menu icon replacements — applies to
+        // every panel this theme is active on.
+        $this->registerIconAliases();
+
+        // Sidebar footer with live status + regrouped, glanceable navigation
+        // accents (badges, section separators) — cosmetic hooks only, the
+        // navigation tree itself is still owned by each PanelProvider.
+        $this->registerSidebarHooks();
+
+        if ($panel->getId() === 'server') {
+            $this->registerServerConsoleOverrides();
+        }
+    }
+
+    protected function registerIconAliases(): void
+    {
+        FilamentIcon::register([
+            PanelsIconAlias::SIDEBAR_COLLAPSE_BUTTON => 'tabler-layout-sidebar-left-collapse',
+            PanelsIconAlias::SIDEBAR_EXPAND_BUTTON => 'tabler-layout-sidebar-left-expand',
+            PanelsIconAlias::SIDEBAR_GROUP_COLLAPSE_BUTTON => 'tabler-chevron-down',
+            PanelsIconAlias::TOPBAR_OPEN_SIDEBAR_BUTTON => 'tabler-menu-2',
+            PanelsIconAlias::TOPBAR_CLOSE_SIDEBAR_BUTTON => 'tabler-x',
+            PanelsIconAlias::USER_MENU_PROFILE_ITEM => 'tabler-user-circle',
+            PanelsIconAlias::USER_MENU_LOGOUT_BUTTON => 'tabler-logout-2',
+            PanelsIconAlias::THEME_SWITCHER_LIGHT_BUTTON => 'tabler-sun-filled',
+            PanelsIconAlias::THEME_SWITCHER_DARK_BUTTON => 'tabler-moon-stars',
+            PanelsIconAlias::THEME_SWITCHER_SYSTEM_BUTTON => 'tabler-device-desktop',
+            PanelsIconAlias::GLOBAL_SEARCH_FIELD => 'tabler-command',
+        ]);
+    }
+
+    protected function registerSidebarHooks(): void
+    {
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::SIDEBAR_FOOTER,
+            fn (): string => Blade::render('<x-exylia-theme::sidebar-status />'),
+        );
+    }
+
+    /**
+     * Registers Exylia's console widgets via the panel's own public extension
+     * point, and prepends a view location so our own blade files take
+     * priority over the panel's core console views (same relative path,
+     * resolved first — the base views remain untouched on disk).
+     */
+    protected function registerServerConsoleOverrides(): void
+    {
+        Console::registerCustomWidgets(ConsoleWidgetPosition::Top, [
+            QuickAccessWidget::class,
+        ]);
+
+        Console::registerCustomWidgets(ConsoleWidgetPosition::BelowConsole, [
+            SystemPulseWidget::class,
+        ]);
+
+        View::prependLocation(dirname(__DIR__) . '/resources/views/overrides');
     }
 
     protected function renderHead(): string

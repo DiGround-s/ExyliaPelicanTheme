@@ -27,7 +27,7 @@ Success `#8fffc1` · Warning `#ffc58f` · Danger `#a33b53` · Info `#59a4ff`.
 
 **1. Import** (any of these):
 - Admin UI: **Plugins > Import > URL**, paste the release asset link:
-  `https://github.com/DiGround-s/ExyliaPelicanTheme/releases/download/v1.0.4/exylia-theme.zip`
+  `https://github.com/DiGround-s/ExyliaPelicanTheme/releases/download/v2.0.0/exylia-theme.zip`
 - Or copy this folder into the panel's persistent `plugins/` volume as
   `plugins/exylia-theme/`.
 
@@ -59,6 +59,31 @@ plugin id (`exylia-theme.zip`), because the importer locates
   (`resources/views/components/atmosphere.blade.php`).
 - **Accessibility:** on-brand focus rings, `prefers-reduced-motion` respected,
   and an explicit "disable motion" toggle.
+- **Structural sidebar redesign** — eyebrow-style group labels, a left accent
+  bar for the active item instead of a solid fill, and a custom footer
+  (`SIDEBAR_FOOTER` hook) showing the current server's live status and the
+  panel version.
+- **Global icon replacements** via `FilamentIcon::register()` — sidebar
+  collapse/expand, topbar toggle, user menu, theme switcher and global search
+  all use Tabler icons distinct from the stock set.
+- **Rebuilt server console** (server panel only):
+  - `QuickAccessWidget` and `SystemPulseWidget`, registered through the
+    panel's own public extension point
+    (`App\Filament\Server\Pages\Console::registerCustomWidgets()`), no core
+    files touched.
+  - The console page and terminal component are **overridden** (same relative
+    view path, resolved with priority via `View::prependLocation()`) to add a
+    context header, a windowed terminal frame, and a violet xterm.js theme.
+    All websocket/Livewire event wiring in the terminal is unchanged from
+    upstream — see the inline comments in
+    `resources/views/overrides/filament/components/server-console.blade.php`.
+
+> **Maintenance note:** the two files under `resources/views/overrides/`
+> mirror Pelican core views by relative path. If a future panel update
+> changes `resources/views/filament/server/pages/console.blade.php` or
+> `resources/views/filament/components/server-console.blade.php` upstream,
+> this plugin's overrides can drift out of sync and should be diffed against
+> the new upstream version after updating the panel.
 
 ## Theme Preview page
 
@@ -89,13 +114,18 @@ plugins/exylia-theme/
 ├── src/
 │   ├── ExyliaThemePlugin.php
 │   ├── Pages/ThemePreview.php
+│   ├── Widgets/{QuickAccessWidget,SystemPulseWidget}.php
 │   ├── Concerns/{BuildsExyliaPalette,InteractsWithExyliaSettings}.php
 │   └── Providers/ExyliaThemeServiceProvider.php
 ├── resources/
 │   ├── css/theme.css
 │   ├── js/theme.js
 │   └── views/
-│       ├── components/atmosphere.blade.php
-│       └── pages/preview.blade.php
+│       ├── components/{atmosphere,sidebar-status}.blade.php
+│       ├── pages/preview.blade.php
+│       ├── widgets/{quick-access,system-pulse}.blade.php
+│       └── overrides/filament/     ← view-finder-priority overrides, see note above
+│           ├── server/pages/console.blade.php
+│           └── components/server-console.blade.php
 └── lang/en/theme.php
 ```

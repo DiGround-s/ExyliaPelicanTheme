@@ -167,31 +167,152 @@
 }
 
 /* ==========================================================================
-   4. Structural components — sidebar, topbar, cards, inputs
+   4. Sidebar — restructured, not just recolored
    ========================================================================== */
-.exylia-theme .fi-sidebar,
-.exylia-theme .fi-topbar > * {
-    background: color-mix(in oklab, var(--exylia-bg-elevated) 78%, transparent);
-    backdrop-filter: blur(14px) saturate(1.1);
-    border-color: var(--exylia-border);
+.exylia-theme .fi-sidebar {
+    --sidebar-width: 18rem;
+    background: color-mix(in oklab, var(--exylia-bg-elevated) 86%, transparent);
+    backdrop-filter: blur(18px) saturate(1.15);
+    border-inline-end: 1px solid var(--exylia-border);
+    box-shadow: 1px 0 0 0 color-mix(in oklab, var(--exylia-primary) 8%, transparent);
 }
 
-.exylia-theme .fi-sidebar-item-button {
-    border-radius: var(--exylia-radius);
+.exylia-theme .fi-sidebar-header {
+    padding-block: 1.25rem;
+    border-bottom: 1px solid var(--exylia-border);
+    margin-bottom: 0.5rem;
+}
+
+/* Group headers become small-caps eyebrow labels with a glowing rule,
+   instead of plain bold text — a distinct information hierarchy. */
+.exylia-theme .fi-sidebar-group-btn {
+    padding-inline: 1.25rem;
+    margin-top: 1rem;
+}
+.exylia-theme .fi-sidebar-group-label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--exylia-text-dim);
+}
+.exylia-theme .fi-sidebar-group:first-of-type .fi-sidebar-group-btn {
+    margin-top: 0;
+}
+.exylia-theme .fi-sidebar-group-items {
+    position: relative;
+    padding-inline-start: 0.75rem;
+    margin-inline: 0.75rem;
+    border-inline-start: 1px solid var(--exylia-border);
+}
+
+.exylia-theme .fi-sidebar-item {
+    padding-inline: 0.5rem;
+}
+.exylia-theme .fi-sidebar-item-btn {
+    border-radius: calc(var(--exylia-radius) - 0.15rem);
+    padding-block: 0.55rem;
     transition: background var(--exylia-fast) var(--exylia-ease),
-        transform var(--exylia-fast) var(--exylia-ease);
+        transform var(--exylia-fast) var(--exylia-ease),
+        color var(--exylia-fast) var(--exylia-ease);
+    position: relative;
 }
-.exylia-theme .fi-sidebar-item-button:hover {
-    background: color-mix(in oklab, var(--exylia-secondary) 14%, transparent);
-    transform: translateX(2px);
+.exylia-theme .fi-sidebar-item-btn:hover {
+    background: color-mix(in oklab, var(--exylia-secondary) 12%, transparent);
+    transform: translateX(3px);
 }
-.exylia-theme .fi-sidebar-item.fi-active .fi-sidebar-item-button {
+/* Active item: left accent bar + gradient wash instead of a full solid fill,
+   so the active state reads as "highlighted" rather than "boxed". */
+.exylia-theme .fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+    background: linear-gradient(90deg, color-mix(in oklab, var(--exylia-primary) 22%, transparent), transparent);
+    color: var(--exylia-secondary-light);
+}
+.exylia-theme .fi-sidebar-item.fi-active .fi-sidebar-item-btn::before {
+    content: '';
+    position: absolute;
+    inset-block: 0.25rem;
+    inset-inline-start: -0.75rem;
+    width: 3px;
+    border-radius: 9999px;
+    background: var(--exylia-gradient);
+    box-shadow: 0 0 12px 1px color-mix(in oklab, var(--exylia-primary) 70%, transparent);
+}
+.exylia-theme .fi-sidebar-item-icon {
+    transition: transform var(--exylia-fast) var(--exylia-ease);
+}
+.exylia-theme .fi-sidebar-item.fi-active .fi-sidebar-item-icon {
+    color: var(--exylia-secondary-light);
+}
+.exylia-theme .fi-sidebar-item-btn:hover .fi-sidebar-item-icon {
+    transform: scale(1.08);
+}
+
+.exylia-theme .fi-sidebar-item-badge-ctn .fi-badge {
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--exylia-secondary) 30%, transparent);
+}
+
+/* Custom Exylia sidebar footer (status + version), see sidebar-status.blade.php */
+.exylia-sidebar-status {
+    padding: 0.85rem 1.25rem 1.1rem;
+    border-top: 1px solid var(--exylia-border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.exylia-sidebar-status__row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--exylia-text-muted);
+}
+.exylia-sidebar-status__dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 9999px;
+    background: var(--exylia-success);
+    box-shadow: 0 0 8px 1px currentColor;
+}
+.exylia-sidebar-status__dot[data-color='danger'] { background: var(--exylia-danger); }
+.exylia-sidebar-status__dot[data-color='warning'] { background: var(--exylia-warning); }
+.exylia-sidebar-status__dot[data-color='gray'] { background: var(--exylia-text-dim); }
+.exylia-sidebar-status__version {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.68rem;
+    color: var(--exylia-text-dim);
+}
+.exylia-sidebar-status__version-icon {
+    width: 0.85rem;
+    height: 0.85rem;
+    color: var(--exylia-secondary-light);
+}
+
+/* ==========================================================================
+   5. Topbar — pill navigation instead of a flat bar
+   ========================================================================== */
+.exylia-theme .fi-topbar {
+    background: color-mix(in oklab, var(--exylia-bg-elevated) 80%, transparent);
+    backdrop-filter: blur(16px) saturate(1.1);
+    border-bottom: 1px solid var(--exylia-border);
+}
+.exylia-theme .fi-topbar-item {
+    border-radius: 9999px;
+    transition: background var(--exylia-fast) var(--exylia-ease);
+}
+.exylia-theme .fi-topbar-item:hover {
+    background: color-mix(in oklab, var(--exylia-secondary) 12%, transparent);
+}
+.exylia-theme .fi-topbar-item.fi-active {
     background: var(--exylia-gradient);
     color: #fff;
     box-shadow: var(--exylia-glow-shadow);
 }
 
-/* Cards / sections / widgets */
+/* ==========================================================================
+   6. Cards / sections / widgets — asymmetric top notch instead of a plain box
+   ========================================================================== */
 .exylia-theme .fi-section,
 .exylia-theme .fi-wi,
 .exylia-theme .fi-ta-ctn,
@@ -201,9 +322,22 @@
     border: 1px solid var(--exylia-border);
     border-radius: var(--exylia-radius);
     backdrop-filter: blur(8px);
+    position: relative;
+    overflow: hidden;
     transition: border-color var(--exylia-base) var(--exylia-ease),
         box-shadow var(--exylia-base) var(--exylia-ease),
         transform var(--exylia-base) var(--exylia-ease);
+}
+.exylia-theme .fi-section::before,
+.exylia-theme .fi-wi::before {
+    content: '';
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    width: 3.5rem;
+    height: 3px;
+    background: var(--exylia-gradient);
+    border-end-end-radius: 9999px;
 }
 .exylia-theme .fi-section:hover,
 .exylia-theme .fi-wi:hover {
@@ -211,7 +345,7 @@
     box-shadow: var(--exylia-glow-shadow);
 }
 
-/* Inputs */
+/* Inputs — icon-indent style prompt, not a plain bordered box */
 .exylia-theme .fi-input,
 .exylia-theme .fi-select-input,
 .exylia-theme .fi-fo-field-wrp .fi-input-wrp {
@@ -224,20 +358,24 @@
     border-color: var(--exylia-secondary);
 }
 
-/* Primary buttons — brand gradient with soft glow */
+/* Buttons — asymmetric radius (top-left/bottom-right rounder) instead of a
+   uniform pill, so Exylia primary actions read as a distinct shape. */
 .exylia-theme .fi-btn.fi-color-primary,
 .exylia-theme .fi-btn-primary {
     background: var(--exylia-gradient);
     border: none;
+    border-radius: 0.35rem 0.9rem 0.35rem 0.9rem;
     box-shadow: var(--exylia-glow-shadow);
     transition: transform var(--exylia-fast) var(--exylia-ease),
         box-shadow var(--exylia-base) var(--exylia-ease),
-        filter var(--exylia-fast) var(--exylia-ease);
+        filter var(--exylia-fast) var(--exylia-ease),
+        border-radius var(--exylia-base) var(--exylia-ease);
 }
 .exylia-theme .fi-btn.fi-color-primary:hover,
 .exylia-theme .fi-btn-primary:hover {
     transform: translateY(-1px);
     filter: brightness(1.06);
+    border-radius: 0.9rem 0.35rem 0.9rem 0.35rem;
     box-shadow: 0 0 46px -6px color-mix(in oklab, var(--exylia-primary) 70%, transparent);
 }
 .exylia-theme .fi-btn:active {
@@ -490,4 +628,203 @@
     color: var(--exylia-info);
     background: color-mix(in oklab, var(--exylia-info) 12%, transparent);
     border-color: color-mix(in oklab, var(--exylia-info) 35%, transparent);
+}
+
+/* ==========================================================================
+   10. Server Console — restructured shell, quick access, system pulse
+   (Exylia\ExyliaTheme\Pages overrides / Widgets)
+   ========================================================================== */
+.exylia-console-shell {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.exylia-console-context {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: var(--exylia-radius);
+    background: linear-gradient(90deg, color-mix(in oklab, var(--exylia-primary) 10%, transparent), transparent);
+    border: 1px solid var(--exylia-border);
+}
+.exylia-console-context__eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--exylia-text-dim);
+}
+.exylia-console-context__name {
+    margin: 0.1rem 0 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--exylia-text);
+}
+.exylia-console-context__status {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: color-mix(in oklab, var(--exylia-success) 14%, transparent);
+    color: var(--exylia-success);
+}
+.exylia-console-context__status[data-color='danger'] {
+    background: color-mix(in oklab, var(--exylia-danger) 14%, transparent);
+    color: color-mix(in oklab, var(--exylia-danger) 75%, #fff 25%);
+}
+.exylia-console-context__status[data-color='warning'] {
+    background: color-mix(in oklab, var(--exylia-warning) 14%, transparent);
+    color: var(--exylia-warning);
+}
+.exylia-console-context__status[data-color='gray'] {
+    background: color-mix(in oklab, var(--exylia-text-dim) 14%, transparent);
+    color: var(--exylia-text-dim);
+}
+.exylia-console-context__status-icon {
+    width: 1rem;
+    height: 1rem;
+}
+
+/* Quick access strip (QuickAccessWidget) */
+.exylia-quick-access {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+}
+.exylia-quick-access__item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-radius: calc(var(--exylia-radius) - 0.2rem);
+    border: 1px solid var(--exylia-border);
+    background: color-mix(in oklab, var(--exylia-surface) 85%, transparent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--exylia-text-muted);
+    transition: transform var(--exylia-fast) var(--exylia-ease),
+        border-color var(--exylia-fast) var(--exylia-ease),
+        color var(--exylia-fast) var(--exylia-ease);
+}
+.exylia-quick-access__item:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in oklab, var(--exylia-secondary) 45%, transparent);
+    color: var(--exylia-secondary-light);
+    box-shadow: var(--exylia-glow-shadow);
+}
+.exylia-quick-access__icon {
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* System pulse strip (SystemPulseWidget) */
+.exylia-pulse {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.75rem;
+}
+.exylia-pulse__item {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.75rem;
+    border-radius: calc(var(--exylia-radius) - 0.2rem);
+    border: 1px solid var(--exylia-border);
+    background: color-mix(in oklab, var(--exylia-surface) 85%, transparent);
+}
+.exylia-pulse__icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    color: var(--exylia-secondary-light);
+    flex-shrink: 0;
+}
+.exylia-pulse__text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.exylia-pulse__label {
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--exylia-text-dim);
+}
+.exylia-pulse__value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--exylia-text);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Terminal frame (server-console.blade.php override) */
+.exylia-terminal-frame {
+    border-radius: var(--exylia-radius);
+    border: 1px solid var(--exylia-border);
+    background: color-mix(in oklab, #0b0713 88%, var(--exylia-primary) 6%);
+    overflow: hidden;
+    box-shadow: var(--exylia-glow-shadow);
+}
+.exylia-terminal-frame__chrome {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.6rem 0.85rem;
+    background: color-mix(in oklab, var(--exylia-bg-elevated) 80%, transparent);
+    border-bottom: 1px solid var(--exylia-border);
+}
+.exylia-terminal-frame__dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 9999px;
+    background: var(--exylia-text-dim);
+}
+.exylia-terminal-frame__dot[data-tone='danger'] { background: var(--exylia-danger); }
+.exylia-terminal-frame__dot[data-tone='warning'] { background: var(--exylia-warning); }
+.exylia-terminal-frame__dot[data-tone='success'] { background: var(--exylia-success); }
+.exylia-terminal-frame__title {
+    margin-inline-start: 0.5rem;
+    font-size: 0.7rem;
+    font-family: var(--mono-font-family, monospace);
+    color: var(--exylia-text-dim);
+    letter-spacing: 0.04em;
+}
+.exylia-terminal {
+    padding: 0.75rem 1rem;
+    min-height: 16rem;
+}
+.exylia-terminal-input {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border-top: 1px solid var(--exylia-border);
+    background: color-mix(in oklab, var(--exylia-bg-elevated) 60%, transparent);
+}
+.exylia-terminal-input__caret {
+    width: 1rem;
+    height: 1rem;
+    color: var(--exylia-secondary-light);
+    flex-shrink: 0;
+}
+.exylia-terminal-input__field {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    box-shadow: none;
+    font-family: var(--mono-font-family, monospace);
+    font-size: 0.85rem;
+    color: var(--exylia-text);
+}
+.exylia-terminal-input__field::placeholder {
+    color: var(--exylia-text-dim);
 }
