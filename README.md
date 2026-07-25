@@ -17,23 +17,37 @@ Success `#8fffc1` · Warning `#ffc58f` · Danger `#a33b53` · Info `#59a4ff`.
 
 ## Install
 
-Copy this folder into the panel's persistent `plugins/` volume as
-`plugins/exylia-theme/`, then:
+> **Important:** this plugin ships with `meta.status: "not_installed"`.
+> Importing it (by file or by URL) only extracts the files — it does **not**
+> compile assets or activate the theme. You must run the install step below
+> before the theme is enabled. Enabling a theme plugin without first running
+> `p:plugin:install` will crash the panel with a "Unable to locate file in
+> Vite manifest" 500 error, because the CSS/JS entries won't exist in the
+> panel's Vite manifest yet.
 
+**1. Import** (any of these):
+- Admin UI: **Plugins > Import > URL**, paste the release asset link:
+  `https://github.com/DiGround-s/ExyliaPelicanTheme/releases/download/v1.0.0/exylia-theme.zip`
+- Or copy this folder into the panel's persistent `plugins/` volume as
+  `plugins/exylia-theme/`.
+
+**2. Install (compiles assets + enables the theme):**
 ```bash
 php artisan p:plugin:install exylia-theme
 ```
+Or from the Admin UI: on the Plugins list, the newly imported theme shows a
+**"Install"** action (visible while its status is "Not Installed") — click it.
 
-Installing a `category: theme` plugin triggers the panel's `yarn install && yarn
-build` automatically. The panel's own `vite.config.js` globs
-`plugins/*/resources/css/**/*.css`, so `resources/css/theme.css` (and
-`resources/js/theme.js`) are picked up and compiled into the panel's Vite
-manifest — no build tooling ships in this plugin.
+This triggers the panel's `yarn install && yarn build`. The panel's own
+`vite.config.js` globs `plugins/*/resources/css/**/*.css`, so
+`resources/css/theme.css` (and `resources/js/theme.js`) are picked up and
+compiled into the panel's Vite manifest — no build tooling ships in this
+plugin.
 
-You can also install through the UI: **Admin > Plugins > Import** (ZIP or URL).
-When importing by ZIP, the archive filename must match the plugin id
-(`exylia-theme.zip`), because the importer locates `exylia-theme/plugin.json`
-inside it.
+When importing by ZIP file directly, the archive filename must match the
+plugin id (`exylia-theme.zip`), because the importer locates
+`exylia-theme/plugin.json` inside it. Do **not** use GitHub's "Source code
+(zip)" link — use the release asset link above.
 
 ## What it does
 
