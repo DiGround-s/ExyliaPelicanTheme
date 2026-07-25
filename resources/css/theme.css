@@ -5,8 +5,7 @@
 /* plugin head render hook, so admin settings change the look with no rebuild. */
 
 /* Use the official Filament v5 theme entrypoint. It imports the complete
-   panel CSS (layout, sidebar, topbar, pages and all Filament packages) and
-   disables a second Tailwind source scan for this separate theme entrypoint. */
+   panel CSS (layout, sidebar, topbar, pages and all Filament packages). */
 @import '../../../../vendor/filament/filament/resources/css/theme.css';
 
 /* ==========================================================================
