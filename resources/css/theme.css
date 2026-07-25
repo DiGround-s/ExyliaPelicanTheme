@@ -1,0 +1,504 @@
+/* Exylia Theme — galactic, minimalist, premium. */
+/* Built by the panel Vite pipeline (Tailwind v4). Paths are relative to */
+/* plugins/exylia-theme/resources/css/ and mirror the panel app.css so the */
+/* Filament CSS layers resolve. Runtime --exylia-* tokens are injected by the */
+/* plugin head render hook, so admin settings change the look with no rebuild. */
+
+@import 'tailwindcss';
+
+/* Filament v5 CSS layers required for the utilities used here. */
+@import '../../../../vendor/filament/support/resources/css/index.css';
+@import '../../../../vendor/filament/actions/resources/css/index.css';
+@import '../../../../vendor/filament/forms/resources/css/index.css';
+@import '../../../../vendor/filament/schemas/resources/css/index.css';
+@import '../../../../vendor/filament/tables/resources/css/index.css';
+@import '../../../../vendor/filament/widgets/resources/css/index.css';
+
+@custom-variant dark (.dark &);
+
+@source '../../src';
+@source '../views';
+
+/* ==========================================================================
+   1. Semantic tokens — derived from the injected Exylia palette
+   ========================================================================== */
+:root {
+    /* Fallbacks in case the head hook has not run yet. */
+    --exylia-primary: #8a51c4;
+    --exylia-secondary: #aa76de;
+    --exylia-secondary-light: #b48fd9;
+    --exylia-success: #8fffc1;
+    --exylia-warning: #ffc58f;
+    --exylia-danger: #a33b53;
+    --exylia-info: #59a4ff;
+    --exylia-glow: 0.55;
+
+    /* Motion */
+    --exylia-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    --exylia-fast: 140ms;
+    --exylia-base: 240ms;
+    --exylia-slow: 520ms;
+
+    /* Radius & elevation */
+    --exylia-radius: 0.85rem;
+    --exylia-ring: 0 0 0 2px color-mix(in oklab, var(--exylia-secondary) 65%, transparent);
+    --exylia-glow-shadow: 0 0 40px -8px color-mix(in oklab, var(--exylia-primary) calc(var(--exylia-glow) * 60%), transparent);
+
+    /* Gradient used across brand surfaces */
+    --exylia-gradient: linear-gradient(135deg, var(--exylia-primary), var(--exylia-secondary) 55%, var(--exylia-secondary-light));
+}
+
+/* ---- Dark theme surfaces (default galactic canvas) ---------------------- */
+.dark {
+    --exylia-bg: #0b0713;
+    --exylia-bg-elevated: #140c22;
+    --exylia-surface: color-mix(in oklab, #160e26 92%, var(--exylia-primary));
+    --exylia-border: color-mix(in oklab, var(--exylia-secondary) 18%, transparent);
+    --exylia-text: #e7cfff;
+    --exylia-text-muted: #b9a5cc;
+    --exylia-text-dim: #a89ab5;
+}
+
+/* ---- Light theme — white + soft violet, never a harsh flat white -------- */
+:root:not(.dark) {
+    --exylia-bg: #f7f4fc;
+    --exylia-bg-elevated: #ffffff;
+    --exylia-surface: color-mix(in oklab, #ffffff 88%, var(--exylia-secondary-light));
+    --exylia-border: color-mix(in oklab, var(--exylia-primary) 16%, transparent);
+    --exylia-text: #3a2a52;
+    --exylia-text-muted: #6b5a86;
+    --exylia-text-dim: #8a7ba3;
+}
+
+/* ==========================================================================
+   2. Base canvas
+   ========================================================================== */
+.exylia-theme .fi-body,
+.exylia-theme .fi-simple-layout {
+    background: radial-gradient(
+            1200px 800px at 15% -10%,
+            color-mix(in oklab, var(--exylia-primary) calc(var(--exylia-glow) * 22%), transparent),
+            transparent 60%
+        ),
+        radial-gradient(
+            1000px 700px at 100% 0%,
+            color-mix(in oklab, var(--exylia-secondary) calc(var(--exylia-glow) * 16%), transparent),
+            transparent 55%
+        ),
+        var(--exylia-bg);
+    color: var(--exylia-text);
+}
+
+/* ==========================================================================
+   3. Atmosphere layer (injected component)
+   ========================================================================== */
+.exylia-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+    contain: strict;
+}
+
+.exylia-atmosphere__glow {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(90px);
+    opacity: calc(var(--exylia-glow) * 0.9);
+    mix-blend-mode: screen;
+    will-change: transform, opacity;
+}
+.exylia-atmosphere__glow--one {
+    width: 42vw;
+    height: 42vw;
+    left: -8vw;
+    top: -10vw;
+    background: radial-gradient(circle, var(--exylia-primary), transparent 68%);
+    animation: exylia-drift-a 26s var(--exylia-ease) infinite alternate;
+}
+.exylia-atmosphere__glow--two {
+    width: 36vw;
+    height: 36vw;
+    right: -6vw;
+    top: 8vh;
+    background: radial-gradient(circle, var(--exylia-secondary), transparent 68%);
+    animation: exylia-drift-b 32s var(--exylia-ease) infinite alternate;
+}
+.exylia-atmosphere__glow--three {
+    width: 30vw;
+    height: 30vw;
+    left: 40vw;
+    bottom: -14vw;
+    background: radial-gradient(circle, var(--exylia-secondary-light), transparent 70%);
+    animation: exylia-drift-c 38s var(--exylia-ease) infinite alternate;
+}
+
+/* Starfield — cheap layered radial-gradients, no images. */
+.exylia-atmosphere__stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(1px 1px at 20% 30%, color-mix(in oklab, var(--exylia-text) 70%, transparent), transparent),
+        radial-gradient(1px 1px at 70% 20%, color-mix(in oklab, var(--exylia-secondary-light) 80%, transparent), transparent),
+        radial-gradient(1px 1px at 40% 70%, color-mix(in oklab, var(--exylia-text) 55%, transparent), transparent),
+        radial-gradient(1.5px 1.5px at 85% 60%, color-mix(in oklab, var(--exylia-secondary) 75%, transparent), transparent),
+        radial-gradient(1px 1px at 55% 85%, color-mix(in oklab, var(--exylia-text) 45%, transparent), transparent);
+    background-repeat: repeat;
+    background-size: 420px 420px;
+    opacity: calc(var(--exylia-glow) * 0.5);
+    animation: exylia-twinkle 6s ease-in-out infinite;
+}
+
+.exylia-atmosphere__grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(color-mix(in oklab, var(--exylia-secondary) 6%, transparent) 1px, transparent 1px),
+        linear-gradient(90deg, color-mix(in oklab, var(--exylia-secondary) 6%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: radial-gradient(70% 60% at 50% 0%, #000 0%, transparent 75%);
+    opacity: 0.5;
+}
+
+/* Toggle visibility from body classes set by the head hook. */
+.exylia-theme:not(.exylia-glow) .exylia-atmosphere__glow,
+.exylia-theme:not(.exylia-glow) .exylia-atmosphere__grid {
+    display: none;
+}
+.exylia-theme:not(.exylia-starfield) .exylia-atmosphere__stars {
+    display: none;
+}
+
+/* Ensure real content sits above the atmosphere. */
+.exylia-theme .fi-layout,
+.exylia-theme .fi-simple-layout > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ==========================================================================
+   4. Structural components — sidebar, topbar, cards, inputs
+   ========================================================================== */
+.exylia-theme .fi-sidebar,
+.exylia-theme .fi-topbar > * {
+    background: color-mix(in oklab, var(--exylia-bg-elevated) 78%, transparent);
+    backdrop-filter: blur(14px) saturate(1.1);
+    border-color: var(--exylia-border);
+}
+
+.exylia-theme .fi-sidebar-item-button {
+    border-radius: var(--exylia-radius);
+    transition: background var(--exylia-fast) var(--exylia-ease),
+        transform var(--exylia-fast) var(--exylia-ease);
+}
+.exylia-theme .fi-sidebar-item-button:hover {
+    background: color-mix(in oklab, var(--exylia-secondary) 14%, transparent);
+    transform: translateX(2px);
+}
+.exylia-theme .fi-sidebar-item.fi-active .fi-sidebar-item-button {
+    background: var(--exylia-gradient);
+    color: #fff;
+    box-shadow: var(--exylia-glow-shadow);
+}
+
+/* Cards / sections / widgets */
+.exylia-theme .fi-section,
+.exylia-theme .fi-wi,
+.exylia-theme .fi-ta-ctn,
+.exylia-theme .fi-modal-window,
+.exylia-theme .fi-dropdown-panel {
+    background: color-mix(in oklab, var(--exylia-surface) 90%, transparent);
+    border: 1px solid var(--exylia-border);
+    border-radius: var(--exylia-radius);
+    backdrop-filter: blur(8px);
+    transition: border-color var(--exylia-base) var(--exylia-ease),
+        box-shadow var(--exylia-base) var(--exylia-ease),
+        transform var(--exylia-base) var(--exylia-ease);
+}
+.exylia-theme .fi-section:hover,
+.exylia-theme .fi-wi:hover {
+    border-color: color-mix(in oklab, var(--exylia-secondary) 40%, transparent);
+    box-shadow: var(--exylia-glow-shadow);
+}
+
+/* Inputs */
+.exylia-theme .fi-input,
+.exylia-theme .fi-select-input,
+.exylia-theme .fi-fo-field-wrp .fi-input-wrp {
+    border-radius: calc(var(--exylia-radius) - 0.2rem);
+    transition: box-shadow var(--exylia-fast) var(--exylia-ease),
+        border-color var(--exylia-fast) var(--exylia-ease);
+}
+.exylia-theme .fi-input-wrp:focus-within {
+    box-shadow: var(--exylia-ring);
+    border-color: var(--exylia-secondary);
+}
+
+/* Primary buttons — brand gradient with soft glow */
+.exylia-theme .fi-btn.fi-color-primary,
+.exylia-theme .fi-btn-primary {
+    background: var(--exylia-gradient);
+    border: none;
+    box-shadow: var(--exylia-glow-shadow);
+    transition: transform var(--exylia-fast) var(--exylia-ease),
+        box-shadow var(--exylia-base) var(--exylia-ease),
+        filter var(--exylia-fast) var(--exylia-ease);
+}
+.exylia-theme .fi-btn.fi-color-primary:hover,
+.exylia-theme .fi-btn-primary:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.06);
+    box-shadow: 0 0 46px -6px color-mix(in oklab, var(--exylia-primary) 70%, transparent);
+}
+.exylia-theme .fi-btn:active {
+    transform: translateY(0) scale(0.99);
+}
+
+/* Global focus ring — accessible and on-brand */
+.exylia-theme *:focus-visible {
+    outline: none;
+    box-shadow: var(--exylia-ring);
+    border-radius: calc(var(--exylia-radius) - 0.35rem);
+}
+
+/* Badges / links accent */
+.exylia-theme a:not(.fi-btn):hover {
+    color: var(--exylia-secondary-light);
+}
+
+/* ==========================================================================
+   5. Custom scrollbar
+   ========================================================================== */
+.exylia-scrollbar * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklab, var(--exylia-secondary) 55%, transparent) transparent;
+}
+.exylia-scrollbar *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+.exylia-scrollbar *::-webkit-scrollbar-track {
+    background: transparent;
+}
+.exylia-scrollbar *::-webkit-scrollbar-thumb {
+    background: color-mix(in oklab, var(--exylia-primary) 55%, var(--exylia-secondary));
+    border-radius: 9999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+.exylia-scrollbar *::-webkit-scrollbar-thumb:hover {
+    background: var(--exylia-secondary-light);
+    background-clip: padding-box;
+}
+
+/* ==========================================================================
+   6. Entrance microinteractions
+   ========================================================================== */
+.exylia-theme .fi-section,
+.exylia-theme .fi-wi {
+    animation: exylia-rise var(--exylia-slow) var(--exylia-ease) both;
+}
+.exylia-theme .fi-main > * + * {
+    animation: exylia-rise var(--exylia-slow) var(--exylia-ease) both;
+    animation-delay: 60ms;
+}
+
+/* ==========================================================================
+   7. Keyframes
+   ========================================================================== */
+@keyframes exylia-rise {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+@keyframes exylia-twinkle {
+    0%, 100% { opacity: calc(var(--exylia-glow) * 0.35); }
+    50% { opacity: calc(var(--exylia-glow) * 0.6); }
+}
+@keyframes exylia-drift-a {
+    to { transform: translate3d(6vw, 4vh, 0) scale(1.1); }
+}
+@keyframes exylia-drift-b {
+    to { transform: translate3d(-5vw, 6vh, 0) scale(1.08); }
+}
+@keyframes exylia-drift-c {
+    to { transform: translate3d(4vw, -5vh, 0) scale(1.12); }
+}
+
+/* ==========================================================================
+   8. Reduced motion & explicit no-motion — accessibility first
+   ========================================================================== */
+.exylia-no-motion * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .exylia-theme * {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+.exylia-no-motion .exylia-atmosphere__glow,
+.exylia-no-motion .exylia-atmosphere__stars {
+    animation: none;
+}
+
+/* ==========================================================================
+   9. Theme Preview page (Exylia\ExyliaTheme\Pages\ThemePreview)
+   ========================================================================== */
+.exylia-preview-hero {
+    position: relative;
+    overflow: hidden;
+    border-radius: var(--exylia-radius);
+    padding: 2.25rem;
+    margin-bottom: 1.5rem;
+    background: var(--exylia-gradient);
+    color: #fff;
+    box-shadow: var(--exylia-glow-shadow);
+    isolation: isolate;
+}
+.exylia-preview-hero__glow {
+    position: absolute;
+    inset: -40% -10% auto auto;
+    width: 60%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.35), transparent 60%);
+    filter: blur(40px);
+    z-index: -1;
+    animation: exylia-drift-b 30s var(--exylia-ease) infinite alternate;
+}
+.exylia-preview-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.28em;
+    font-size: 0.7rem;
+    opacity: 0.85;
+    margin: 0 0 0.5rem;
+}
+.exylia-preview-title {
+    font-size: clamp(1.5rem, 3vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 0.5rem;
+}
+.exylia-preview-lead {
+    max-width: 46ch;
+    opacity: 0.92;
+    margin: 0;
+}
+
+.exylia-swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.85rem;
+}
+.exylia-swatch {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    padding: 0.75rem;
+    border: 1px solid var(--exylia-border);
+    border-radius: calc(var(--exylia-radius) - 0.2rem);
+    transition: transform var(--exylia-fast) var(--exylia-ease),
+        box-shadow var(--exylia-base) var(--exylia-ease);
+}
+.exylia-swatch:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--exylia-glow-shadow);
+}
+.exylia-swatch__chip {
+    height: 2.75rem;
+    border-radius: calc(var(--exylia-radius) - 0.35rem);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.exylia-swatch__name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--exylia-text);
+}
+.exylia-swatch__hex {
+    font-size: 0.75rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--exylia-text-muted);
+}
+
+.exylia-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+}
+.exylia-grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+.exylia-grid-3 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.exylia-stat {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1;
+    margin: 0;
+    background: var(--exylia-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+.exylia-stat span {
+    font-size: 1rem;
+    margin-left: 0.15rem;
+    color: var(--exylia-text-muted);
+    -webkit-text-fill-color: var(--exylia-text-muted);
+}
+.exylia-stat-sub {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
+    color: var(--exylia-text-dim);
+}
+
+.exylia-callouts {
+    display: grid;
+    gap: 0.6rem;
+}
+.exylia-callout {
+    padding: 0.75rem 1rem;
+    border-radius: calc(var(--exylia-radius) - 0.25rem);
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+}
+.exylia-callout--success {
+    color: var(--exylia-success);
+    background: color-mix(in oklab, var(--exylia-success) 12%, transparent);
+    border-color: color-mix(in oklab, var(--exylia-success) 35%, transparent);
+}
+.exylia-callout--warning {
+    color: var(--exylia-warning);
+    background: color-mix(in oklab, var(--exylia-warning) 12%, transparent);
+    border-color: color-mix(in oklab, var(--exylia-warning) 35%, transparent);
+}
+.exylia-callout--danger {
+    color: color-mix(in oklab, var(--exylia-danger) 80%, #fff 20%);
+    background: color-mix(in oklab, var(--exylia-danger) 15%, transparent);
+    border-color: color-mix(in oklab, var(--exylia-danger) 40%, transparent);
+}
+.exylia-callout--info {
+    color: var(--exylia-info);
+    background: color-mix(in oklab, var(--exylia-info) 12%, transparent);
+    border-color: color-mix(in oklab, var(--exylia-info) 35%, transparent);
+}

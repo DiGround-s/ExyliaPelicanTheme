@@ -1,0 +1,19 @@
+{
+    "id": "exylia-theme",
+    "name": "Exylia Theme",
+    "author": "Exylia",
+    "version": "1.0.0",
+    "description": "A premium, minimalist galactic theme for Pelican Panel. Controlled violet gradients, soft glow, refined depth, custom scrollbars and purposeful motion. Full dark & light modes, admin-configurable.",
+    "category": "theme",
+    "url": "",
+    "update_url": "",
+    "namespace": "Exylia\\ExyliaTheme",
+    "class": "ExyliaThemePlugin",
+    "panels": null,
+    "panel_version": null,
+    "composer_packages": null,
+    "meta": {
+        "status": "enabled",
+        "status_message": null
+    }
+}
