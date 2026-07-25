@@ -6,15 +6,15 @@
 
 @import 'tailwindcss';
 
-/* Filament v5 CSS layers required for the utilities used here. */
-@import '../../../../vendor/filament/support/resources/css/index.css';
-@import '../../../../vendor/filament/actions/resources/css/index.css';
-@import '../../../../vendor/filament/forms/resources/css/index.css';
-@import '../../../../vendor/filament/schemas/resources/css/index.css';
-@import '../../../../vendor/filament/tables/resources/css/index.css';
-@import '../../../../vendor/filament/widgets/resources/css/index.css';
+/* The filament/filament package CSS already imports support, actions, forms,
+   infolists, notifications, schemas, tables and widgets, plus the panel
+   layout/sidebar/topbar/header/page components that this theme replaces the
+   default Filament theme with. Importing only the sub-packages (without this
+   one) breaks the panel layout because layout.css, sidebar.css, topbar.css
+   etc. never load. */
+@import '../../../../vendor/filament/filament/resources/css/index.css';
 
-@custom-variant dark (.dark &);
+@variant dark (&:where(.dark, .dark *));
 
 @source '../../src';
 @source '../views';
